@@ -1,224 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chat With This Page</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-primary: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --badge-bg: #1e293b;
-            --answer-bg: #0b1329;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            width: 360px;
-            padding: 16px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
-            font-size: 14px;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .header-icon {
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 6px;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .tab-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-        }
-
-        .tab-box-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-
-        #page-title {
-            font-size: 13px;
-            color: #cbd5e1;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-        }
-
-        input::placeholder {
-            color: var(--text-muted);
-        }
-
-        button {
-            width: 100%;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        }
-
-        button:active:not(:disabled) {
-            transform: scale(0.99);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        #answer {
-            margin-top: 8px;
-            padding: 12px;
-            background: var(--answer-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 13px;
-            line-height: 1.5;
-            overflow-wrap: anywhere;
-            max-height: 280px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        #answer:not(:empty) {
-            display: block;
-        }
-
-        #answer strong {
-            color: #60a5fa;
-            font-weight: 700;
-        }
-
-        #answer em {
-            color: #93c5fd;
-            font-style: italic;
-        }
-
-        #answer code {
-            background: #1e293b;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #f1f5f9;
-        }
-
-        #answer ul {
-            margin: 6px 0 6px 18px;
-            padding: 0;
-        }
-
-        #answer li {
-            margin-bottom: 4px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PageSense V2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-icon">✦</div>
-        <h3>Chat With This Page</h3>
+  <div class="popup-container">
+    <!-- Startup Frontend Loading Screen -->
+  <div class="splash-overlay" id="splash-overlay">
+    <div class="splash-ambient-glow"></div>
+    <div class="splash-inner">
+      <div class="splash-mac-dots" aria-hidden="true">
+        <span class="mac-dot mac-dot-close"></span>
+        <span class="mac-dot mac-dot-min"></span>
+        <span class="mac-dot mac-dot-max"></span>
+      </div>
+      <div class="splash-badge-wrap">
+        <div class="splash-radar-pulse"></div>
+        <div class="splash-orbit-spinner"></div>
+        <div class="splash-icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </div>
+      </div>
+      <div class="splash-brand-title">
+        PageSense <span class="splash-badge-tag">V2</span>
+      </div>
+      <div class="splash-loading-status" id="splash-status-text">
+        <span class="splash-spin-dot"></span>
+        <span class="splash-status-label">Reading page context…</span>
+      </div>
+      <div class="splash-progress-track">
+        <div class="splash-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-layout app-hidden">
+    <!-- Header with macOS Traffic Lights & Sleek Border -->
+    <header class="masthead">
+      <div class="masthead-left">
+        <div class="mac-window-controls" aria-label="Window controls">
+          <span class="mac-dot mac-dot-close" title="Close"></span>
+          <span class="mac-dot mac-dot-min" title="Minimize"></span>
+          <span class="mac-dot mac-dot-max" title="Maximize"></span>
+        </div>
+        <div class="masthead-brand">
+          <div class="brand-text">
+            <div class="brand-name-row">
+              <span class="brand-name">PageSense</span>
+              <span class="brand-ver">V2</span>
+            </div>
+            <div class="brand-status" id="backend-status-pill">
+              <span class="status-indicator-dot" id="backend-dot"></span>
+              <span id="backend-status-text">Checking…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="masthead-controls">
+        <button id="toggle-dossier-btn" class="control-btn" title="Inspect Page Context" aria-label="Inspect Page Context">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </button>
+        <button id="rescan-btn" class="control-btn" title="Re-scan Active Tab" aria-label="Re-scan Active Tab">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+        <button id="clear-btn" class="control-btn" title="Clear Conversation" aria-label="Clear Conversation">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Context Strip -->
+    <section class="context-strip" id="context-strip">
+      <div class="context-meta-row">
+        <span class="context-domain" id="page-domain">DETECTING PAGE…</span>
+        <span class="context-readtime" id="read-time-badge">— min read</span>
+      </div>
+      <div class="context-title" id="page-title">Scanning active tab…</div>
+      <div class="context-status-bar">
+        <div class="context-state-badge">
+          <span class="context-bullet" id="context-dot"></span>
+          <span id="context-state">Scanning</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collapsible Context Drawer -->
+    <section class="dossier-drawer" id="dossier-drawer" hidden>
+      <div class="drawer-header">
+        <span class="drawer-title">Document Inspection</span>
+        <button class="drawer-close" id="drawer-close-btn" aria-label="Close Inspection">&#x2715;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-field">
+          <label for="drawer-url">Source URL</label>
+          <div class="url-copy-box">
+            <input type="text" id="drawer-url" readonly />
+            <button id="copy-url-btn" class="drawer-action-btn" title="Copy URL">Copy</button>
+          </div>
+        </div>
+        <div class="drawer-field">
+          <div class="capacity-label-row">
+            <label>Context Window</label>
+            <span class="capacity-nums" id="capacity-text">0 / 250,000 chars</span>
+          </div>
+          <div class="capacity-track">
+            <div class="capacity-fill" id="context-meter"></div>
+          </div>
+        </div>
+        <div class="drawer-field" id="contacts-field" hidden>
+          <label>Extracted Contacts</label>
+          <div class="contacts-list" id="contacts-list"></div>
+        </div>
+        <div class="drawer-field">
+          <button id="copy-context-btn" class="drawer-action-btn secondary-btn">Copy Full Extracted Text</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offline Banner -->
+    <div class="offline-banner" id="offline-banner" hidden style="display: none;">
+      <div class="offline-banner-lead">
+        <div class="offline-status-beacon" aria-hidden="true"></div>
+        <div class="offline-content">
+          <div class="offline-header-row">
+            <span class="offline-title">Backend Server Offline</span>
+            <span class="offline-pill">DISCONNECTED</span>
+          </div>
+          <div class="offline-cmd-row">
+            <span class="offline-cmd-label">Run:</span>
+            <code class="offline-code">uvicorn main:app --reload</code>
+          </div>
+        </div>
+      </div>
+      <div class="offline-actions">
+        <button id="copy-command-btn" class="offline-action-btn" title="Copy terminal command" aria-label="Copy terminal command">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span class="btn-text">Copy</span>
+        </button>
+        <button id="retry-backend-btn" class="offline-action-btn retry" title="Retry connection" aria-label="Retry connection">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="retry-icon">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span class="retry-text">Retry</span>
+        </button>
+      </div>
     </div>
 
-    <div class="tab-box">
-        <div class="tab-box-label">Current Page</div>
-        <div id="page-title">Loading active tab...</div>
-    </div>
+    <!-- Quick Action Chips -->
+    <nav class="quick-nav" aria-label="Quick Actions">
+      <button class="action-chip chip-summarize" data-prompt="Summarize this entire page into clear, concise executive bullet points.">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="21" y1="10" x2="3" y2="10"></line>
+          <line x1="21" y1="6" x2="3" y2="6"></line>
+          <line x1="21" y1="14" x2="3" y2="14"></line>
+          <line x1="21" y1="18" x2="7" y2="18"></line>
+        </svg>
+        <span>Summarize</span>
+      </button>
+      <button class="action-chip chip-facts" data-prompt="Extract all key numbers, metrics, dates, prices, and contact details from this page.">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>Key Facts</span>
+      </button>
+      <button class="action-chip chip-takeaways" data-prompt="What are the essential takeaways, main arguments, and conclusions of this page?">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        <span>Takeaways</span>
+      </button>
+    </nav>
 
-    <div class="input-group">
-        <input
+    <!-- Chat Messages Stream -->
+    <main class="chat-stream" id="chat-box" role="log" aria-live="polite">
+      <div class="editorial-empty-state" id="empty-state">
+        <div class="empty-dossier-card">
+          <div class="empty-header">
+            <div class="empty-card-mac-dots" aria-hidden="true">
+              <span class="mini-dot red"></span>
+              <span class="mini-dot yellow"></span>
+              <span class="mini-dot green"></span>
+            </div>
+            <span class="empty-badge">FULL PAGE INDEXED</span>
+          </div>
+          <p class="empty-lead">
+            PageSense has ingested the active tab context. Ask any question or choose a prompt below:
+          </p>
+          <div class="empty-suggestions">
+            <button class="suggestion-link" data-prompt="Summarize this entire page into clear, concise executive bullet points.">
+              <span class="suggestion-text">What is the primary objective of this page?</span>
+              <svg class="suggestion-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button class="suggestion-link" data-prompt="What technical specifications or key details are outlined here?">
+              <span class="suggestion-text">What specifications or details are outlined here?</span>
+              <svg class="suggestion-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <button class="suggestion-link" data-prompt="Identify any deadlines, dates, or contact info mentioned.">
+              <span class="suggestion-text">Identify any deadlines, dates, or contact info.</span>
+              <svg class="suggestion-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Input Bar -->
+    <footer class="inquiry-bar">
+      <form id="inquiry-form" class="inquiry-form" onsubmit="return false;">
+        <div class="input-wrapper">
+          <input
             type="text"
             id="question"
-            placeholder="Ask a question about this page..."
+            placeholder="Ask about this page…"
             autocomplete="off"
-        >
+            spellcheck="false"
+            aria-label="Question about active webpage"
+          />
+          <kbd class="key-hint" aria-hidden="true">↵</kbd>
+        </div>
+        <button type="submit" id="ask-button" title="Submit Inquiry" aria-label="Submit Inquiry">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+    </footer>
     </div>
+  </div>
 
-    <button id="ask-button">Ask Gemini</button>
-
-    <p id="status"></p>
-    <div id="answer"></div>
-
-    <script src="popup.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
