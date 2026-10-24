@@ -44,10 +44,15 @@ Most browser chatbots fail on dynamic websites because they either scrape incomp
 
 ## 📸 Screenshots & UI Showcase
 
-| **Full Page Context & Quick Actions** | **Live Word & Character Badge** |
-| :---: | :---: |
-| <img src="./thumbnail.png" alt="PageSense AI Popup UI" width="420"/> | <img src="https://via.placeholder.com/420x250/0b1120/60a5fa?text=Live+Badge:+5.4k+Words+Detected" alt="Live Toolbar Badge" width="420"/> |
+### Homepage
+<img src="screenshot/cover photo.png" alt="PageSense AI Popup UI" width="420"/> 
 
+### Loading Screen
+<img src="screenshot\Loading Screen.png" />
+
+## Frontend
+<img src="screenshot/frontend.png" />
+---
 > 💡 **Tip:** Save the generated promotional image above into your project root folder as **`thumbnail.png`** so the banner and table images render automatically on GitHub!
 
 ---
