@@ -45,13 +45,14 @@ Most browser chatbots fail on dynamic websites because they either scrape incomp
 ## 📸 Screenshots & UI Showcase
 
 ### Homepage
-<img src="screenshot/cover photo.png" alt="PageSense AI Popup UI" width="420"/> 
+<img src="screenshot/cover photo.png" alt="PageSense AI Popup UI" width="420"/>
 
 ### Loading Screen
-<img src="screenshot\Loading Screen.png" />
+<img src="screenshot/Loading Screen.png" alt="PageSense AI Loading Screen" width="420"/>
 
-## Frontend
-<img src="screenshot/frontend.png" />
+### Frontend
+<img src="screenshot/frontend.png" alt="PageSense AI Frontend UI" width="420"/>
+
 ---
 > 💡 **Tip:** Save the generated promotional image above into your project root folder as **`thumbnail.png`** so the banner and table images render automatically on GitHub!
 
@@ -59,37 +60,8 @@ Most browser chatbots fail on dynamic websites because they either scrape incomp
 
 ## 🏗️ System Architecture
 
-```mermaid
-graph LR
-    A[Active Webpage DOM] -->|MutationObserver| B(content.js)
-    B -->|Word & Char Count| C(background.js Badge)
-    B -->|Full Text + Metadata| D[popup.js Frontend UI]
-    D -->|POST /chat JSON| E[FastAPI Backend]
-    E -->|LangChain Prompt| F((Google Gemini API))
-    F -->|Markdown Answer| D
-```
 
----
 
-## 📂 Project Structure
-
-```text
-PageSense-AI-Complete/
-├── thumbnail.png             # Promotional banner image (save your image here)
-├── main.py                   # FastAPI server + LangChain + Gemini fallback logic
-├── requirements.txt          # Python backend dependencies
-├── .env                      # Environment file storing GOOGLE_API_KEY
-├── run_backend.bat           # 1-click Windows startup script for the backend
-└── extension/                # Chrome Extension (Manifest V3)
-    ├── manifest.json         # Extension configuration & permissions
-    ├── background.js         # Service worker for live word-count toolbar badge
-    ├── content.js            # Auto-detection & deep DOM text extraction
-    ├── popup.html            # Modern chatbot interface layout
-    ├── popup.css             # Dark-mode styling & micro-animations
-    └── popup.js              # Frontend state, fallback injector, and API client
-```
-
----
 
 ## 🚀 Getting Started
 
