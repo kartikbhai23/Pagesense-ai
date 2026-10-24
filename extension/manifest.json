@@ -8,6 +8,7 @@
     "scripting"
   ],
   "host_permissions": [
+    "https://pagesense-ai.onrender.com/*",
     "http://127.0.0.1:8000/*",
     "http://localhost:8000/*",
     "<all_urls>"
@@ -20,8 +21,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ]

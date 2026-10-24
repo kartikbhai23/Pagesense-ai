@@ -261,7 +261,8 @@ input {
 .brand-text {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  justify-content: center;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -269,6 +270,7 @@ input {
   display: flex;
   align-items: center;
   gap: 6px;
+  line-height: 1;
 }
 
 .brand-name {
@@ -276,7 +278,7 @@ input {
   font-weight: 700;
   letter-spacing: -0.2px;
   color: var(--text-primary);
-  line-height: 1;
+  line-height: 1.15;
 }
 
 .brand-ver {
@@ -287,10 +289,13 @@ input {
   color: var(--accent-cyan);
   background: var(--accent-cyan-soft);
   border: 1px solid var(--accent-cyan-border);
-  padding: 1px 4.5px;
+  padding: 1.5px 5px;
   border-radius: var(--radius-xs);
   letter-spacing: 0.3px;
-  line-height: 1.1;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .brand-status {
@@ -298,8 +303,10 @@ input {
   align-items: center;
   gap: 5px;
   font-size: 10px;
+  font-weight: 500;
   color: var(--text-muted);
-  line-height: 1;
+  line-height: 1.2;
+  padding-left: 1px;
 }
 
 .status-indicator-dot {
@@ -309,6 +316,7 @@ input {
   background: var(--text-faint);
   transition: background-color var(--trans-normal), box-shadow var(--trans-normal);
   flex-shrink: 0;
+  margin-top: -0.5px;
 }
 
 .status-indicator-dot.online {

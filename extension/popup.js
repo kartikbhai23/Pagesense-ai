@@ -185,7 +185,7 @@ function appendBotMessage(rawMarkdown) {
   wrapper.appendChild(meta);
   wrapper.appendChild(content);
   chatBox.appendChild(wrapper);
-  
+
   wrapper.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
@@ -265,7 +265,7 @@ function attachSuggestionListeners() {
 
 async function checkBackend() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/health", { signal: AbortSignal.timeout(3000) });
+    const res = await fetch("https://pagesense-ai.onrender.com/health", { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       backendDot.className = "status-indicator-dot online";
       backendStatusText.textContent = "Connected";
@@ -273,7 +273,7 @@ async function checkBackend() {
       offlineBanner.style.display = "none";
       return true;
     }
-  } catch (e) {}
+  } catch (e) { }
 
   backendDot.className = "status-indicator-dot offline";
   backendStatusText.textContent = "Offline";
@@ -423,7 +423,7 @@ async function handleAsk(customPrompt = null) {
       }
     }
 
-    const response = await fetch("http://127.0.0.1:8000/chat", {
+    const response = await fetch("https://pagesense-ai.onrender.com/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
