@@ -12,35 +12,37 @@
   let toolbarEl = null;
   let panelEl = null;
   let busy = false;
+  let lastMouse = { x: 0, y: 0 };
 
   // ── Inject CSS into the page ──
   const css = document.createElement("style");
   css.textContent = `
     #ps-sel-toolbar {
-      all: initial !important;
+      box-sizing: border-box !important;
       position: fixed !important;
       display: flex !important;
       align-items: center !important;
-      gap: 2px !important;
+      gap: 3px !important;
       padding: 6px 10px !important;
-      background: #fff !important;
-      border: 1px solid #ddd !important;
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
       border-radius: 999px !important;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18) !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.22) !important;
       z-index: 2147483647 !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
       font-size: 13px !important;
+      line-height: normal !important;
+      margin: 0 !important;
       white-space: nowrap !important;
       pointer-events: auto !important;
       user-select: none !important;
       animation: psSlideIn 0.15s ease-out !important;
     }
     @keyframes psSlideIn {
-      from { opacity: 0; transform: translateY(5px); }
+      from { opacity: 0; transform: translateY(4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     #ps-sel-toolbar .ps-logo {
-      all: initial !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -55,7 +57,7 @@
       flex-shrink: 0 !important;
     }
     #ps-sel-toolbar button {
-      all: initial !important;
+      box-sizing: border-box !important;
       display: inline-flex !important;
       align-items: center !important;
       height: 32px !important;
@@ -63,70 +65,74 @@
       border: none !important;
       border-radius: 7px !important;
       background: transparent !important;
-      color: #222 !important;
+      color: #1f2937 !important;
       font: 13px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
       cursor: pointer !important;
       white-space: nowrap !important;
+      margin: 0 !important;
     }
     #ps-sel-toolbar button:hover {
-      background: #f0f2f5 !important;
+      background: #f3f4f6 !important;
     }
     #ps-sel-toolbar button.ps-primary {
       font-weight: 600 !important;
+      color: #0284c7 !important;
+    }
+    #ps-sel-toolbar button.ps-primary:hover {
+      background: #e0f2fe !important;
     }
     #ps-sel-toolbar .ps-divider {
-      all: initial !important;
       display: inline-block !important;
       width: 1px !important;
-      height: 22px !important;
-      background: #e0e0e0 !important;
+      height: 20px !important;
+      background: #e5e7eb !important;
       margin: 0 3px !important;
     }
 
     /* ── Answer Panel ── */
     #ps-sel-panel {
-      all: initial !important;
+      box-sizing: border-box !important;
       position: fixed !important;
       display: flex !important;
       flex-direction: column !important;
-      width: 500px !important;
+      width: 440px !important;
       max-width: calc(100vw - 20px) !important;
-      min-height: 150px !important;
-      max-height: 420px !important;
-      background: #fff !important;
-      border: 1px solid #ddd !important;
-      border-radius: 16px !important;
-      box-shadow: 0 8px 36px rgba(0,0,0,0.2) !important;
+      min-height: 120px !important;
+      max-height: 380px !important;
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 14px !important;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25) !important;
       z-index: 2147483647 !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
       overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
       animation: psPanelIn 0.2s ease-out !important;
     }
     @keyframes psPanelIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     #ps-sel-panel .ps-hdr {
-      all: initial !important;
+      box-sizing: border-box !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      padding: 14px 16px 10px !important;
-      border-bottom: 1px solid #f0f0f0 !important;
-      font-family: inherit !important;
+      padding: 12px 16px !important;
+      border-bottom: 1px solid #f3f4f6 !important;
+      background: #fafafa !important;
+      margin: 0 !important;
     }
     #ps-sel-panel .ps-brand {
-      all: initial !important;
       display: flex !important;
       align-items: center !important;
       gap: 8px !important;
-      font-size: 16px !important;
+      font-size: 15px !important;
       font-weight: 600 !important;
-      color: #222 !important;
-      font-family: inherit !important;
+      color: #111827 !important;
     }
     #ps-sel-panel .ps-brand .ps-logo {
-      all: initial !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -139,7 +145,7 @@
       font-weight: bold !important;
     }
     #ps-sel-panel .ps-close {
-      all: initial !important;
+      box-sizing: border-box !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -148,29 +154,38 @@
       border: none !important;
       border-radius: 6px !important;
       background: transparent !important;
-      color: #888 !important;
-      font-size: 20px !important;
+      color: #6b7280 !important;
+      font-size: 18px !important;
       cursor: pointer !important;
       font-family: Arial, sans-serif !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    #ps-sel-panel .ps-close:hover { background: #f0f2f5 !important; }
+    #ps-sel-panel .ps-close:hover {
+      background: #e5e7eb !important;
+      color: #111827 !important;
+    }
     #ps-sel-panel .ps-body {
-      all: initial !important;
+      box-sizing: border-box !important;
       display: block !important;
       flex: 1 !important;
-      padding: 12px 18px 18px !important;
+      padding: 16px 20px 20px !important;
       overflow-y: auto !important;
-      font: 14px/1.7 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
-      color: #222 !important;
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+      font-weight: 600 !important;
+      color: #111827 !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
+      margin: 0 !important;
     }
     #ps-sel-panel .ps-body.loading {
-      color: #aaa !important;
+      color: #6b7280 !important;
+      font-weight: normal !important;
       font-style: italic !important;
     }
     #ps-sel-panel .ps-body.error {
-      color: #d32f2f !important;
+      color: #dc2626 !important;
+      font-weight: normal !important;
     }
   `;
   document.head.appendChild(css);
@@ -218,7 +233,7 @@
       <button data-action="search">🔍 Search</button>
       <button data-action="translate">🌐 Translate</button>
       <span class="ps-divider"></span>
-      <button data-action="close" style="width:28px!important;padding:0!important;justify-content:center!important;font-size:16px!important;color:#999!important;">✕</button>
+      <button data-action="close" style="width:26px!important;padding:0!important;justify-content:center!important;font-size:15px!important;color:#9ca3af!important;">✕</button>
     `;
 
     // Handle button clicks
@@ -251,17 +266,27 @@
     document.body.appendChild(bar);
     toolbarEl = bar;
 
-    // Position above selection
+    // Position above or near selection
     requestAnimationFrame(() => {
-      const bw = bar.offsetWidth;
-      const bh = bar.offsetHeight;
-      let left = rect.left + rect.width / 2 - bw / 2;
-      let top = rect.top - bh - 10;
-      if (top < 8) top = rect.bottom + 10;
-      left = clamp(left, 8, innerWidth - bw - 8);
-      top = clamp(top, 8, innerHeight - bh - 8);
-      bar.style.left = Math.round(left) + "px";
-      bar.style.top = Math.round(top) + "px";
+      const bw = bar.offsetWidth || 340;
+      const bh = bar.offsetHeight || 44;
+
+      const refX = (lastMouse.x > 0) ? lastMouse.x : (rect.left + rect.width / 2);
+      const refY = (lastMouse.y > 0) ? lastMouse.y : rect.top;
+
+      let left = refX - bw / 2;
+      let top = refY - bh - 12;
+
+      // If offscreen at top, place below cursor/selection
+      if (top < 10) {
+        top = (lastMouse.y > 0) ? (lastMouse.y + 16) : (rect.bottom + 10);
+      }
+
+      left = clamp(left, 10, window.innerWidth - bw - 10);
+      top = clamp(top, 10, window.innerHeight - bh - 10);
+
+      bar.style.setProperty("left", Math.round(left) + "px", "important");
+      bar.style.setProperty("top", Math.round(top) + "px", "important");
     });
   }
 
@@ -292,15 +317,22 @@
 
     // Position below selection
     requestAnimationFrame(() => {
-      const pw = p.offsetWidth;
-      const ph = p.offsetHeight;
-      let left = rect.left + rect.width / 2 - pw / 2;
-      let top = rect.bottom + 10;
-      if (top + ph > innerHeight - 8) top = rect.top - ph - 10;
-      left = clamp(left, 8, innerWidth - pw - 8);
-      top = clamp(top, 8, innerHeight - ph - 8);
-      p.style.left = Math.round(left) + "px";
-      p.style.top = Math.round(top) + "px";
+      const pw = p.offsetWidth || 440;
+      const ph = p.offsetHeight || 180;
+
+      const refX = (lastMouse.x > 0) ? lastMouse.x : (rect.left + rect.width / 2);
+      let left = refX - pw / 2;
+      let top = (lastMouse.y > 0) ? (lastMouse.y + 16) : (rect.bottom + 10);
+
+      if (top + ph > window.innerHeight - 10) {
+        top = (lastMouse.y > 0) ? (lastMouse.y - ph - 16) : (rect.top - ph - 10);
+      }
+
+      left = clamp(left, 10, window.innerWidth - pw - 10);
+      top = clamp(top, 10, window.innerHeight - ph - 10);
+
+      p.style.setProperty("left", Math.round(left) + "px", "important");
+      p.style.setProperty("top", Math.round(top) + "px", "important");
     });
   }
 
@@ -325,7 +357,12 @@
       bodyEl.textContent = resp.answer;
     } catch (err) {
       bodyEl.className = "ps-body error";
-      bodyEl.textContent = err?.message || "Failed to get answer.";
+      const msg = err?.message || "Failed to get answer.";
+      if (msg.includes("context invalidated") || msg.includes("Extension context")) {
+        bodyEl.textContent = "⚠️ Extension was reloaded! Please refresh this webpage (Ctrl + R / F5) to reconnect.";
+      } else {
+        bodyEl.textContent = msg;
+      }
     } finally {
       busy = false;
     }
@@ -335,8 +372,10 @@
   //  EVENTS
   // ══════════════════════════════════════════════
 
-  // After user finishes selecting text → show toolbar
-  document.addEventListener("mouseup", () => {
+  // Track mouse coordinates on release
+  document.addEventListener("mouseup", (e) => {
+    lastMouse = { x: e.clientX, y: e.clientY };
+
     setTimeout(() => {
       if (panelEl) return; // don't interfere with open panel
 
@@ -345,7 +384,7 @@
         selectedText = info.text.slice(0, 12000);
         showToolbar(info.rect);
       }
-    }, 100);
+    }, 80);
   });
 
   // Click anywhere outside → close
