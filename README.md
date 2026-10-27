@@ -43,16 +43,14 @@ Most browser chatbots fail on dynamic websites because they either scrape incomp
 ---
 
 ## 📸 Screenshots & UI Showcase
-
 ### Homepage
-<img src="screenshot/cover photo.png" alt="PageSense AI Popup UI" width="420"/>
+<img src="screenshot/cover photo.png" alt="PageSense AI Popup UI" width="420"/> 
 
 ### Loading Screen
-<img src="screenshot/Loading Screen.png" alt="PageSense AI Loading Screen" width="420"/>
+<img src="screenshot\Loading Screen.png" />
 
-### Frontend
-<img src="screenshot/frontend.png" alt="PageSense AI Frontend UI" width="420"/>
-
+## Frontend
+<img src="screenshot/frontend.png" />
 ---
 > 💡 **Tip:** Save the generated promotional image above into your project root folder as **`thumbnail.png`** so the banner and table images render automatically on GitHub!
 
@@ -129,3 +127,9 @@ Processes the full webpage text alongside the user's question.
 ## 📜 License
 
 This project is open-source and available under the **MIT License**.
+
+## Selected Text Assistant (added)
+
+Select text on a regular webpage to show the floating **Ask a question** button. Submit a question to get an answer in the same compact panel, then continue with follow-up questions. The feature uses `extension/content_selection.js` and `extension/content_selection.css` and calls the existing deployed `POST https://pagesense-ai.onrender.com/chat` endpoint through the extension service worker.
+
+After updating the files, open `chrome://extensions`, click **Reload**, then refresh the webpage. Chrome internal pages and the Chrome Web Store restrict content scripts.

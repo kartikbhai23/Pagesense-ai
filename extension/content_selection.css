@@ -1,0 +1,244 @@
+/* All styles are isolated inside the content script's Shadow DOM. */
+:host, * {
+  box-sizing: border-box;
+}
+
+.ps-host {
+  pointer-events: none;
+  color: #172033;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ps-selection-button,
+.ps-panel {
+  pointer-events: auto;
+}
+
+.ps-selection-button {
+  position: fixed;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #fff;
+  background: #202b43;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, .25);
+  font: 600 13px/1.2 Inter, ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .12s ease, background .12s ease;
+}
+
+.ps-selection-button:hover {
+  background: #334466;
+  transform: translateY(-1px);
+}
+
+.ps-selection-button:focus-visible,
+.ps-panel button:focus-visible,
+.ps-panel textarea:focus-visible {
+  outline: 2px solid #7c9dff;
+  outline-offset: 2px;
+}
+
+.ps-panel {
+  position: fixed;
+  width: min(360px, calc(100vw - 20px));
+  max-height: min(520px, calc(100vh - 20px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e7ef;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, .24);
+  color: #172033;
+}
+
+.ps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf0f5;
+  background: #fbfcfe;
+}
+
+.ps-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ps-logo {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  background: #e9edff;
+  color: #4059c9;
+  font-size: 16px;
+}
+
+.ps-title {
+  color: #172033;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.ps-icon-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #667085;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.ps-icon-button:hover {
+  background: #eef1f6;
+}
+
+.ps-selected-preview {
+  margin: 12px 14px 0;
+  padding: 10px 11px;
+  max-height: 112px;
+  overflow: auto;
+  border: 1px solid #e9edf4;
+  border-radius: 10px;
+  background: #f7f9fc;
+  color: #536078;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ps-question-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.ps-question-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  resize: vertical;
+  max-height: 120px;
+  padding: 10px 11px;
+  border: 1px solid #dce2ec;
+  border-radius: 10px;
+  background: #fff;
+  color: #172033;
+  font: 13px/1.45 Inter, ui-sans-serif, system-ui, sans-serif;
+  outline: none;
+}
+
+.ps-question-input::placeholder {
+  color: #98a2b3;
+}
+
+.ps-question-input:disabled {
+  background: #f6f7f9;
+  cursor: wait;
+}
+
+.ps-send-button {
+  min-height: 38px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 13px;
+  background: #354cc9;
+  color: #fff;
+  font: 600 12px/1 Inter, ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.ps-send-button:hover {
+  background: #293db0;
+}
+
+.ps-send-button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.ps-status {
+  padding: 0 14px 12px;
+  color: #667085;
+  font-size: 12px;
+}
+
+.ps-status:empty {
+  display: none;
+}
+
+.ps-status.ps-error {
+  color: #b42318;
+}
+
+.ps-question-asked,
+.ps-answer-block {
+  padding: 12px 14px 0;
+}
+
+.ps-question-asked {
+  padding-bottom: 11px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.ps-small-label {
+  margin-bottom: 5px;
+  color: #7b8496;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .08em;
+}
+
+.ps-question-text {
+  color: #344054;
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ps-answer-block {
+  min-height: 50px;
+  overflow: auto;
+}
+
+.ps-answer-text {
+  max-height: 210px;
+  overflow: auto;
+  color: #263248;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ps-followup-form {
+  margin-top: auto;
+  border-top: 1px solid #edf0f5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-selection-button {
+    transition: none;
+  }
+}
