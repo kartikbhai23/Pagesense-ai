@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PageSense Selection Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    h1 { color: #4fc3f7; }
+    p { font-size: 16px; margin: 20px 0; }
+    .highlight { background: #2a2a4a; padding: 20px; border-radius: 12px; border: 1px solid #333; }
+    #status { 
+      position: fixed; top: 10px; right: 10px; 
+      background: #333; color: #4caf50; padding: 10px 18px; 
+      border-radius: 8px; font-size: 13px; z-index: 9999;
+    }
+    #status.error { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div id="status">Checking if content script loaded...</div>
+  
+  <h1>🧪 PageSense Selection Toolbar Test</h1>
+  
+  <div class="highlight">
+    <strong>Instructions:</strong> Select any text on this page. A floating toolbar should appear 
+    above your selection with options: Answer, Copy, Search, Translate. 
+    Click anywhere else to dismiss it.
+  </div>
+
+  <p>
+    Artificial intelligence (AI) is the simulation of human intelligence processes by computer systems. 
+    These processes include learning (the acquisition of information and rules for using the information), 
+    reasoning (using rules to reach approximate or definite conclusions), and self-correction.
+  </p>
+
+  <p>
+    Machine learning is a subset of artificial intelligence that provides systems the ability to automatically 
+    learn and improve from experience without being explicitly programmed. It focuses on the development 
+    of computer programs that can access data and use it to learn for themselves.
+  </p>
+
+  <p>
+    Deep learning is part of a broader family of machine learning methods based on artificial neural networks 
+    with representation learning. Learning can be supervised, semi-supervised or unsupervised. Deep learning 
+    architectures such as deep neural networks, recurrent neural networks, and convolutional neural networks 
+    have been applied to fields including computer vision, speech recognition, and natural language processing.
+  </p>
+
+  <p>
+    Natural language processing (NLP) is a subfield of linguistics, computer science, and artificial intelligence 
+    concerned with the interactions between computers and human language, in particular how to program computers 
+    to process and analyze large amounts of natural language data.
+  </p>
+
+  <script>
+    // Check if content_selection.js loaded
+    setTimeout(() => {
+      const statusEl = document.getElementById('status');
+      if (window.__pagesenseSelectionAssistantLoaded) {
+        statusEl.textContent = '✅ Content script loaded successfully!';
+      } else {
+        statusEl.textContent = '❌ Content script NOT loaded — reload the extension';
+        statusEl.className = 'error';
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
