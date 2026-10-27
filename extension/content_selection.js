@@ -1,303 +1,251 @@
 (() => {
   "use strict";
-
-  // Prevent duplicate initialization if Chrome injects this script more than once.
   if (window.__pagesenseSelectionAssistantLoaded) return;
   window.__pagesenseSelectionAssistantLoaded = true;
 
-  const MIN_SELECTION_LENGTH = 2;
   const MAX_SELECTION_LENGTH = 12000;
-  const ROOT_ID = "pagesense-selection-assistant-root";
-
   let selectedText = "";
-  let selectionButton = null;
+  let toolbar = null;
   let panel = null;
-  let questionInput = null;
-  let answerElement = null;
-  let statusElement = null;
-  let currentView = "button";
-  let requestInProgress = false;
+  let answerText = null;
+  let busy = false;
+  let selectionTimer = null;
   let hideTimer = null;
+  let lastSelectionRect = null;
 
   const root = document.createElement("div");
-  root.id = ROOT_ID;
-  root.style.all = "initial";
-  root.style.position = "fixed";
-  root.style.inset = "0";
-  root.style.zIndex = "2147483647";
-  root.style.pointerEvents = "none";
+  root.id = "pagesense-selection-assistant-root";
+  Object.assign(root.style, {
+    all: "initial", position: "fixed", inset: "0",
+    zIndex: "2147483647", pointerEvents: "none"
+  });
   document.documentElement.appendChild(root);
 
   const shadow = root.attachShadow({ mode: "open" });
-  const styleLink = document.createElement("link");
-  styleLink.rel = "stylesheet";
-  styleLink.href = chrome.runtime.getURL("content_selection.css");
-  shadow.appendChild(styleLink);
-
+  const css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = chrome.runtime.getURL("content_selection.css");
+  shadow.appendChild(css);
   const host = document.createElement("div");
   host.className = "ps-host";
   shadow.appendChild(host);
 
-  function makeElement(tag, className, text) {
-    const element = document.createElement(tag);
-    if (className) element.className = className;
-    if (text !== undefined) element.textContent = text;
-    return element;
-  }
+  const el = (tag, cls, text) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-  function getSelectionRect() {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+  function selectionInfo() {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || !sel.toString().trim()) return null;
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
     if (!rect || (!rect.width && !rect.height)) return null;
-    return rect;
+    return { text: sel.toString().trim(), rect };
   }
 
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function positionNearSelection(element) {
-    const rect = getSelectionRect();
+  function place(element, preferred = "below") {
+    const rect = lastSelectionRect;
     const margin = 10;
-    const width = element.offsetWidth || 170;
-    const height = element.offsetHeight || 42;
-
-    let left = rect ? rect.left + rect.width / 2 - width / 2 : window.innerWidth / 2 - width / 2;
-    let top = rect ? rect.bottom + 8 : 80;
-
-    if (top + height > window.innerHeight - margin) {
-      top = rect ? rect.top - height - 8 : window.innerHeight - height - margin;
-    }
-
-    left = clamp(left, margin, window.innerWidth - width - margin);
-    top = clamp(top, margin, window.innerHeight - height - margin);
-
+    const width = element.offsetWidth || 420;
+    const height = element.offsetHeight || 55;
+    let left = rect ? rect.left + rect.width / 2 - width / 2 : 20;
+    let top = rect ? (preferred === "above" ? rect.top - height - 10 : rect.bottom + 10) : 80;
+    if (top + height > innerHeight - margin) top = rect ? rect.top - height - 10 : innerHeight - height - margin;
+    left = clamp(left, margin, innerWidth - width - margin);
+    top = clamp(top, margin, innerHeight - height - margin);
     element.style.left = `${Math.round(left)}px`;
     element.style.top = `${Math.round(top)}px`;
   }
 
   function clearHideTimer() {
-    if (hideTimer) {
-      clearTimeout(hideTimer);
-      hideTimer = null;
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = null;
+  }
+
+  function closePanel() {
+    if (panel) panel.remove();
+    panel = null;
+    answerText = null;
+    busy = false;
+  }
+
+  function removeToolbar() {
+    if (toolbar) toolbar.remove();
+    toolbar = null;
+  }
+
+  function closeAll() {
+    closePanel();
+    removeToolbar();
+  }
+
+  async function copySelection() {
+    try {
+      await navigator.clipboard.writeText(selectedText);
+      const copyButton = toolbar?.querySelector('[data-action="copy"]');
+      if (copyButton) {
+        copyButton.textContent = "✓ Copied";
+        setTimeout(() => { if (copyButton.isConnected) copyButton.textContent = "▢ Copy"; }, 1200);
+      }
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = selectedText;
+      Object.assign(area.style, { position: "fixed", opacity: "0", left: "-9999px" });
+      document.documentElement.appendChild(area);
+      area.select();
+      const success = document.execCommand("copy");
+      area.remove();
+      const copyButton = toolbar?.querySelector('[data-action="copy"]');
+      if (copyButton) copyButton.textContent = success ? "✓ Copied" : "Copy failed";
+      setTimeout(() => { if (copyButton?.isConnected) copyButton.textContent = "▢ Copy"; }, 1200);
     }
   }
 
-  function removePanel() {
-    if (panel) panel.remove();
-    panel = null;
-    questionInput = null;
-    answerElement = null;
-    statusElement = null;
+  function openSearch() {
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(selectedText)}`, "_blank", "noopener");
+    closeAll();
   }
 
-  function removeSelectionButton() {
-    if (selectionButton) selectionButton.remove();
-    selectionButton = null;
+  function openTranslate() {
+    window.open(`https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(selectedText)}&op=translate`, "_blank", "noopener");
+    closeAll();
   }
 
-  function closeAssistant() {
-    removePanel();
-    removeSelectionButton();
-    currentView = "button";
-  }
-
-  function createSelectionButton() {
-    removeSelectionButton();
-    selectionButton = makeElement("button", "ps-selection-button", "✦ Ask a question");
-    selectionButton.type = "button";
-    selectionButton.setAttribute("aria-label", "Ask PageSense AI about selected text");
-    selectionButton.addEventListener("mousedown", (event) => event.preventDefault());
-    selectionButton.addEventListener("click", () => {
-      clearHideTimer();
-      removeSelectionButton();
-      openQuestionPanel();
+  function createToolbar() {
+    removeToolbar();
+    toolbar = el("div", "ps-toolbar");
+    const logo = el("span", "ps-toolbar-logo", "◉");
+    logo.setAttribute("aria-label", "PageSense AI");
+    const answer = el("button", "ps-tool-button ps-answer-action", "▤  Answer");
+    answer.type = "button";
+    answer.dataset.action = "answer";
+    answer.addEventListener("click", () => {
+      removeToolbar();
+      openAnswerPanel();
+      askBackend("Explain the selected text clearly and concisely. Define any technical terms and give a brief example if useful.");
     });
-    host.appendChild(selectionButton);
-    positionNearSelection(selectionButton);
+
+    const copy = el("button", "ps-tool-button", "▢  Copy");
+    copy.type = "button";
+    copy.dataset.action = "copy";
+    copy.addEventListener("click", copySelection);
+
+    const search = el("button", "ps-tool-button", "◎  Search");
+    search.type = "button";
+    search.addEventListener("click", openSearch);
+
+    const translate = el("button", "ps-tool-button", "文  Translate");
+    translate.type = "button";
+    translate.addEventListener("click", openTranslate);
+
+    const divider = el("span", "ps-toolbar-divider");
+    const more = el("button", "ps-tool-button ps-more-button", "⌄");
+    more.type = "button";
+    more.setAttribute("aria-label", "Close selection toolbar");
+    more.addEventListener("click", closeAll);
+
+    toolbar.append(logo, answer, copy, search, translate, divider, more);
+    host.appendChild(toolbar);
+    place(toolbar, "above");
   }
 
-  function openQuestionPanel() {
-    removePanel();
-    currentView = "question";
-
-    panel = makeElement("section", "ps-panel");
+  function openAnswerPanel() {
+    closePanel();
+    panel = el("section", "ps-answer-panel");
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "PageSense AI selected-text assistant");
+    panel.setAttribute("aria-label", "PageSense AI answer");
 
-    const header = makeElement("div", "ps-header");
-    const brand = makeElement("div", "ps-brand");
-    const logo = makeElement("span", "ps-logo", "✦");
-    const title = makeElement("span", "ps-title", "PageSense AI");
-    brand.append(logo, title);
+    const header = el("div", "ps-answer-header");
+    const brand = el("div", "ps-answer-brand");
+    brand.append(el("span", "ps-toolbar-logo", "◉"), el("strong", "", "Answer"));
+    const close = el("button", "ps-close-button", "×");
+    close.type = "button";
+    close.setAttribute("aria-label", "Close answer");
+    close.addEventListener("click", closePanel);
+    header.append(brand, close);
 
-    const closeButton = makeElement("button", "ps-icon-button", "×");
-    closeButton.type = "button";
-    closeButton.setAttribute("aria-label", "Close assistant");
-    closeButton.addEventListener("click", closeAssistant);
-    header.append(brand, closeButton);
-
-    const selectedPreview = makeElement("div", "ps-selected-preview");
-    selectedPreview.textContent = selectedText.length > 500
-      ? `${selectedText.slice(0, 500)}…`
-      : selectedText;
-
-    const form = makeElement("form", "ps-question-form");
-    questionInput = makeElement("textarea", "ps-question-input");
-    questionInput.rows = 2;
-    questionInput.maxLength = 1000;
-    questionInput.placeholder = "Ask about the selected text…";
-    questionInput.setAttribute("aria-label", "Your question");
-    questionInput.required = true;
-
-    const sendButton = makeElement("button", "ps-send-button", "Ask");
-    sendButton.type = "submit";
-    form.append(questionInput, sendButton);
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const question = questionInput.value.trim();
-      if (!question || requestInProgress) return;
-      await askBackend(question);
-    });
-
-    statusElement = makeElement("div", "ps-status", "");
-    panel.append(header, selectedPreview, form, statusElement);
+    answerText = el("div", "ps-answer-content");
+    answerText.appendChild(el("span", "ps-loading-caret"));
+    panel.append(header, answerText);
     host.appendChild(panel);
-    positionNearSelection(panel);
-    questionInput.focus({ preventScroll: true });
-  }
-
-  function showAnswerView(question, answer) {
-    if (!panel) return;
-    currentView = "answer";
-    panel.replaceChildren();
-
-    const header = makeElement("div", "ps-header");
-    const brand = makeElement("div", "ps-brand");
-    brand.append(
-      makeElement("span", "ps-logo", "✦"),
-      makeElement("span", "ps-title", "PageSense AI")
-    );
-
-    const closeButton = makeElement("button", "ps-icon-button", "×");
-    closeButton.type = "button";
-    closeButton.setAttribute("aria-label", "Close assistant");
-    closeButton.addEventListener("click", closeAssistant);
-    header.append(brand, closeButton);
-
-    const questionBlock = makeElement("div", "ps-question-asked");
-    questionBlock.appendChild(makeElement("div", "ps-small-label", "YOUR QUESTION"));
-    questionBlock.appendChild(makeElement("div", "ps-question-text", question));
-
-    const answerBlock = makeElement("div", "ps-answer-block");
-    answerBlock.appendChild(makeElement("div", "ps-small-label", "ANSWER"));
-    answerElement = makeElement("div", "ps-answer-text", answer);
-    answerBlock.appendChild(answerElement);
-
-    const followupForm = makeElement("form", "ps-question-form ps-followup-form");
-    questionInput = makeElement("textarea", "ps-question-input");
-    questionInput.rows = 2;
-    questionInput.maxLength = 1000;
-    questionInput.placeholder = "Ask a follow-up…";
-    questionInput.setAttribute("aria-label", "Ask a follow-up question");
-    questionInput.required = true;
-
-    const sendButton = makeElement("button", "ps-send-button", "Send");
-    sendButton.type = "submit";
-    followupForm.append(questionInput, sendButton);
-    followupForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const followup = questionInput.value.trim();
-      if (!followup || requestInProgress) return;
-      await askBackend(followup);
-    });
-
-    statusElement = makeElement("div", "ps-status", "");
-    panel.append(header, questionBlock, answerBlock, followupForm, statusElement);
-    positionNearSelection(panel);
-    panel.style.top = `${clamp(parseFloat(panel.style.top) || 80, 10, window.innerHeight - Math.min(panel.offsetHeight, window.innerHeight - 20) - 10)}px`;
-    questionInput.focus({ preventScroll: true });
+    place(panel, "below");
   }
 
   async function askBackend(question) {
-    if (requestInProgress) return;
-    requestInProgress = true;
-
-    if (statusElement) statusElement.textContent = "Thinking…";
-    if (questionInput) questionInput.disabled = true;
-
-    const message = {
-      type: "PAGESENSE_SELECTION_CHAT",
-      question,
-      selected_text: selectedText,
-      page_url: location.href,
-      page_title: document.title || location.hostname
-    };
+    if (busy) return;
+    busy = true;
+    if (answerText) {
+      answerText.textContent = "Thinking…";
+      answerText.classList.add("ps-loading");
+    }
 
     try {
-      const response = await chrome.runtime.sendMessage(message);
-      if (!response || !response.ok) {
-        throw new Error(response?.error || "The backend did not return an answer.");
+      const response = await chrome.runtime.sendMessage({
+        type: "PAGESENSE_SELECTION_CHAT",
+        question,
+        selected_text: selectedText,
+        page_url: location.href,
+        page_title: document.title || location.hostname
+      });
+      if (!response?.ok) throw new Error(response?.error || "Could not get an answer.");
+      if (answerText) {
+        answerText.classList.remove("ps-loading");
+        answerText.textContent = response.answer || "No answer was returned.";
       }
-      showAnswerView(question, response.answer || "No answer was returned.");
     } catch (error) {
-      if (statusElement) {
-        statusElement.textContent = error?.message || "Could not get an answer. Please try again.";
-        statusElement.classList.add("ps-error");
-      }
-      if (questionInput) {
-        questionInput.disabled = false;
-        questionInput.focus({ preventScroll: true });
+      if (answerText) {
+        answerText.classList.remove("ps-loading");
+        answerText.textContent = error?.message || "Could not get an answer. Please try again.";
+        answerText.classList.add("ps-answer-error");
       }
     } finally {
-      requestInProgress = false;
+      busy = false;
+      if (panel) place(panel, "below");
     }
   }
 
-  let selectionTimer = null;
   document.addEventListener("selectionchange", () => {
     clearTimeout(selectionTimer);
     selectionTimer = setTimeout(() => {
-      if (currentView !== "button" || panel) return;
-      const selection = window.getSelection();
-      const text = selection ? selection.toString().trim() : "";
-
-      if (text.length < MIN_SELECTION_LENGTH || !getSelectionRect()) {
-        removeSelectionButton();
+      if (panel) return;
+      const info = selectionInfo();
+      if (!info || info.text.length < 2) {
+        removeToolbar();
         return;
       }
-
-      selectedText = text.slice(0, MAX_SELECTION_LENGTH);
-      createSelectionButton();
-    }, 180);
+      selectedText = info.text.slice(0, MAX_SELECTION_LENGTH);
+      lastSelectionRect = info.rect;
+      createToolbar();
+    }, 160);
   });
-
-  document.addEventListener("mousedown", (event) => {
-    if (!root.contains(event.target)) {
-      // Do not immediately hide the button on the mouseup that created a selection.
-      clearHideTimer();
-    }
-  }, true);
 
   document.addEventListener("mouseup", () => {
     clearHideTimer();
     hideTimer = setTimeout(() => {
-      if (currentView === "button" && selectionButton) {
-        const selection = window.getSelection();
-        if (!selection || !selection.toString().trim()) removeSelectionButton();
+      if (!panel && toolbar) {
+        const info = selectionInfo();
+        if (!info) removeToolbar();
       }
     }, 500);
   }, true);
 
-  window.addEventListener("scroll", () => {
-    if (selectionButton) positionNearSelection(selectionButton);
-    if (panel) positionNearSelection(panel);
+  document.addEventListener("mousedown", event => {
+    if (root.contains(event.target)) return;
+    // A click elsewhere closes the selection toolbar, but the answer panel remains until dismissed.
+    if (toolbar && !panel) removeToolbar();
   }, true);
 
+  window.addEventListener("scroll", () => {
+    const info = selectionInfo();
+    if (info) lastSelectionRect = info.rect;
+    if (toolbar) place(toolbar, "above");
+    if (panel) place(panel, "below");
+  }, true);
   window.addEventListener("resize", () => {
-    if (selectionButton) positionNearSelection(selectionButton);
-    if (panel) positionNearSelection(panel);
+    if (toolbar) place(toolbar, "above");
+    if (panel) place(panel, "below");
   });
 })();

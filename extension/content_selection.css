@@ -1,244 +1,114 @@
-/* All styles are isolated inside the content script's Shadow DOM. */
-:host, * {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 .ps-host {
-  pointer-events: none;
-  color: #172033;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 13px;
+  color: #15171c;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
   line-height: 1.45;
 }
-
-.ps-selection-button,
-.ps-panel {
-  pointer-events: auto;
-}
-
-.ps-selection-button {
+.ps-toolbar, .ps-answer-panel { pointer-events: auto; }
+.ps-toolbar {
   position: fixed;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 7px;
-  border: 1px solid rgba(255,255,255,.18);
+  gap: 3px;
+  max-width: calc(100vw - 20px);
+  padding: 7px 9px;
+  border: 1px solid #e7e9ed;
   border-radius: 999px;
-  padding: 10px 14px;
-  color: #fff;
-  background: #202b43;
-  box-shadow: 0 8px 28px rgba(15, 23, 42, .25);
-  font: 600 13px/1.2 Inter, ui-sans-serif, system-ui, sans-serif;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform .12s ease, background .12s ease;
-}
-
-.ps-selection-button:hover {
-  background: #334466;
-  transform: translateY(-1px);
-}
-
-.ps-selection-button:focus-visible,
-.ps-panel button:focus-visible,
-.ps-panel textarea:focus-visible {
-  outline: 2px solid #7c9dff;
-  outline-offset: 2px;
-}
-
-.ps-panel {
-  position: fixed;
-  width: min(360px, calc(100vw - 20px));
-  max-height: min(520px, calc(100vh - 20px));
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid #e2e7ef;
-  border-radius: 16px;
   background: #fff;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, .24);
-  color: #172033;
+  box-shadow: 0 4px 18px rgba(0,0,0,.20);
+  white-space: nowrap;
 }
-
-.ps-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  border-bottom: 1px solid #edf0f5;
-  background: #fbfcfe;
-}
-
-.ps-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.ps-logo {
-  display: grid;
-  place-items: center;
-  width: 25px;
-  height: 25px;
-  border-radius: 8px;
-  background: #e9edff;
-  color: #4059c9;
-  font-size: 16px;
-}
-
-.ps-title {
-  color: #172033;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.ps-icon-button {
-  display: grid;
+.ps-toolbar-logo {
+  display: inline-grid;
   place-items: center;
   width: 28px;
   height: 28px;
   flex: 0 0 auto;
+  margin-right: 4px;
+  border-radius: 50%;
+  color: #fff;
+  background: radial-gradient(circle at 35% 30%, #29b6ff 0 22%, #0878ff 45%, #3c43e8 75%);
+  font-size: 18px;
+  font-weight: 700;
+}
+.ps-tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 9px;
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #667085;
-  font-size: 22px;
+  color: #17191e;
+  font: 14px/1 Arial, Helvetica, sans-serif;
   cursor: pointer;
 }
-
-.ps-icon-button:hover {
-  background: #eef1f6;
+.ps-tool-button:hover { background: #f0f2f5; }
+.ps-answer-action { font-weight: 500; }
+.ps-toolbar-divider {
+  height: 26px;
+  width: 1px;
+  margin: 0 2px;
+  background: #e5e7eb;
 }
-
-.ps-selected-preview {
-  margin: 12px 14px 0;
-  padding: 10px 11px;
-  max-height: 112px;
-  overflow: auto;
-  border: 1px solid #e9edf4;
-  border-radius: 10px;
-  background: #f7f9fc;
-  color: #536078;
-  font-size: 12px;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.ps-question-form {
+.ps-more-button { min-width: 30px; font-size: 20px; }
+.ps-answer-panel {
+  position: fixed;
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 12px 14px;
-}
-
-.ps-question-input {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  resize: vertical;
-  max-height: 120px;
-  padding: 10px 11px;
-  border: 1px solid #dce2ec;
-  border-radius: 10px;
+  flex-direction: column;
+  width: min(552px, calc(100vw - 20px));
+  min-height: 180px;
+  max-height: min(420px, calc(100vh - 20px));
+  overflow: hidden;
+  border: 1px solid #e2e4e8;
+  border-radius: 20px;
   background: #fff;
-  color: #172033;
-  font: 13px/1.45 Inter, ui-sans-serif, system-ui, sans-serif;
-  outline: none;
+  box-shadow: 0 8px 34px rgba(0,0,0,.22);
+  color: #16181d;
 }
-
-.ps-question-input::placeholder {
-  color: #98a2b3;
+.ps-answer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 14px;
 }
-
-.ps-question-input:disabled {
-  background: #f6f7f9;
-  cursor: wait;
+.ps-answer-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.ps-answer-brand .ps-toolbar-logo { width: 26px; height: 26px; margin: 0; }
+.ps-close-button {
+  width: 28px; height: 28px;
+  border: 0; border-radius: 7px;
+  background: transparent; color: #747980;
+  font: 28px/1 Arial, sans-serif; cursor: pointer;
 }
-
-.ps-send-button {
-  min-height: 38px;
-  flex: 0 0 auto;
-  border: 0;
-  border-radius: 10px;
-  padding: 0 13px;
-  background: #354cc9;
-  color: #fff;
-  font: 600 12px/1 Inter, ui-sans-serif, system-ui, sans-serif;
-  cursor: pointer;
-}
-
-.ps-send-button:hover {
-  background: #293db0;
-}
-
-.ps-send-button:disabled {
-  opacity: .55;
-  cursor: wait;
-}
-
-.ps-status {
-  padding: 0 14px 12px;
-  color: #667085;
-  font-size: 12px;
-}
-
-.ps-status:empty {
-  display: none;
-}
-
-.ps-status.ps-error {
-  color: #b42318;
-}
-
-.ps-question-asked,
-.ps-answer-block {
-  padding: 12px 14px 0;
-}
-
-.ps-question-asked {
-  padding-bottom: 11px;
-  border-bottom: 1px solid #edf0f5;
-}
-
-.ps-small-label {
-  margin-bottom: 5px;
-  color: #7b8496;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: .08em;
-}
-
-.ps-question-text {
-  color: #344054;
-  font-size: 12px;
-  font-weight: 600;
+.ps-close-button:hover { background: #f0f2f5; }
+.ps-answer-content {
+  position: relative;
+  min-height: 112px;
+  padding: 14px 22px 22px;
+  overflow: auto;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-}
-
-.ps-answer-block {
-  min-height: 50px;
-  overflow: auto;
-}
-
-.ps-answer-text {
-  max-height: 210px;
-  overflow: auto;
-  color: #263248;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
 }
-
-.ps-followup-form {
-  margin-top: auto;
-  border-top: 1px solid #edf0f5;
+.ps-answer-content.ps-loading { color: transparent; }
+.ps-loading-caret {
+  display: inline-block;
+  width: 7px;
+  height: 22px;
+  border-radius: 3px;
+  background: #8ab4ff;
+  animation: ps-blink 1s steps(2, start) infinite;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ps-selection-button {
-    transition: none;
-  }
+.ps-answer-error { color: #b42318; }
+@keyframes ps-blink { to { visibility: hidden; } }
+@media (max-width: 520px) {
+  .ps-toolbar { gap: 0; padding: 5px 6px; }
+  .ps-tool-button { padding: 0 6px; font-size: 12px; }
+  .ps-toolbar-logo { width: 25px; height: 25px; }
 }
+@media (prefers-reduced-motion: reduce) { .ps-loading-caret { animation: none; } }

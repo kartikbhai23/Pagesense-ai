@@ -133,3 +133,8 @@ This project is open-source and available under the **MIT License**.
 Select text on a regular webpage to show the floating **Ask a question** button. Submit a question to get an answer in the same compact panel, then continue with follow-up questions. The feature uses `extension/content_selection.js` and `extension/content_selection.css` and calls the existing deployed `POST https://pagesense-ai.onrender.com/chat` endpoint through the extension service worker.
 
 After updating the files, open `chrome://extensions`, click **Reload**, then refresh the webpage. Chrome internal pages and the Chrome Web Store restrict content scripts.
+
+
+## Selected-text toolbar
+
+When text is selected, the extension displays a compact toolbar with **Answer**, **Copy**, **Search**, and **Translate**. Answer opens a floating card and sends the selected text to the existing `/chat` backend for a concise explanation. Copy copies the selected text, Search opens a Google search for it, and Translate opens Google Translate. Reload the extension and refresh the webpage after updating.
