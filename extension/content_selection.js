@@ -22,15 +22,17 @@
       position: fixed !important;
       display: flex !important;
       align-items: center !important;
-      gap: 3px !important;
-      padding: 6px 10px !important;
-      background: #ffffff !important;
-      border: 1px solid #d1d5db !important;
+      gap: 2px !important;
+      padding: 4px 8px !important;
+      background: rgba(255, 255, 255, 0.78) !important;
+      backdrop-filter: blur(14px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
       border-radius: 999px !important;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.22) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
       z-index: 2147483647 !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
-      font-size: 13px !important;
+      font-size: 12px !important;
       line-height: normal !important;
       margin: 0 !important;
       white-space: nowrap !important;
@@ -46,72 +48,74 @@
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      width: 26px !important;
-      height: 26px !important;
+      width: 22px !important;
+      height: 22px !important;
       border-radius: 50% !important;
       background: linear-gradient(135deg, #29b6ff, #0878ff, #3c43e8) !important;
       color: #fff !important;
-      font-size: 14px !important;
+      font-size: 11px !important;
       font-weight: bold !important;
-      margin-right: 4px !important;
+      margin-right: 2px !important;
       flex-shrink: 0 !important;
     }
     #ps-sel-toolbar button {
       box-sizing: border-box !important;
       display: inline-flex !important;
       align-items: center !important;
-      height: 32px !important;
-      padding: 0 10px !important;
+      height: 28px !important;
+      padding: 0 8px !important;
       border: none !important;
-      border-radius: 7px !important;
+      border-radius: 6px !important;
       background: transparent !important;
       color: #1f2937 !important;
-      font: 13px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+      font: 12px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
       cursor: pointer !important;
       white-space: nowrap !important;
       margin: 0 !important;
     }
     #ps-sel-toolbar button:hover {
-      background: #f3f4f6 !important;
+      background: rgba(0, 0, 0, 0.06) !important;
     }
     #ps-sel-toolbar button.ps-primary {
       font-weight: 600 !important;
       color: #0284c7 !important;
     }
     #ps-sel-toolbar button.ps-primary:hover {
-      background: #e0f2fe !important;
+      background: rgba(2, 132, 199, 0.12) !important;
     }
     #ps-sel-toolbar .ps-divider {
       display: inline-block !important;
       width: 1px !important;
-      height: 20px !important;
-      background: #e5e7eb !important;
-      margin: 0 3px !important;
+      height: 18px !important;
+      background: rgba(0, 0, 0, 0.1) !important;
+      margin: 0 2px !important;
     }
 
-    /* ── Answer Panel ── */
+    /* ── Answer Panel (Compact & Transparent) ── */
     #ps-sel-panel {
       box-sizing: border-box !important;
       position: fixed !important;
       display: flex !important;
       flex-direction: column !important;
-      width: 440px !important;
+      width: 260px !important;
       max-width: calc(100vw - 20px) !important;
-      min-height: 120px !important;
-      max-height: 380px !important;
-      background: #ffffff !important;
-      border: 1px solid #d1d5db !important;
-      border-radius: 14px !important;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.25) !important;
+      min-height: auto !important;
+      max-height: 260px !important;
+      background: rgba(255, 255, 255, 0.75) !important;
+      backdrop-filter: blur(16px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
       z-index: 2147483647 !important;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
       overflow: hidden !important;
       margin: 0 !important;
       padding: 0 !important;
-      animation: psPanelIn 0.2s ease-out !important;
+      animation: psPanelIn 0.15s ease-out !important;
     }
     @keyframes psPanelIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     #ps-sel-panel .ps-hdr {
@@ -119,29 +123,30 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      padding: 12px 16px !important;
-      border-bottom: 1px solid #f3f4f6 !important;
-      background: #fafafa !important;
+      padding: 6px 10px !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+      background: rgba(255, 255, 255, 0.4) !important;
       margin: 0 !important;
     }
     #ps-sel-panel .ps-brand {
       display: flex !important;
       align-items: center !important;
-      gap: 8px !important;
-      font-size: 15px !important;
+      gap: 6px !important;
+      font-size: 12px !important;
       font-weight: 600 !important;
-      color: #111827 !important;
+      color: #374151 !important;
+      letter-spacing: 0.2px !important;
     }
     #ps-sel-panel .ps-brand .ps-logo {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      width: 24px !important;
-      height: 24px !important;
+      width: 18px !important;
+      height: 18px !important;
       border-radius: 50% !important;
       background: linear-gradient(135deg, #29b6ff, #0878ff, #3c43e8) !important;
       color: #fff !important;
-      font-size: 13px !important;
+      font-size: 10px !important;
       font-weight: bold !important;
     }
     #ps-sel-panel .ps-close {
@@ -149,43 +154,45 @@
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      width: 28px !important;
-      height: 28px !important;
+      width: 20px !important;
+      height: 20px !important;
       border: none !important;
-      border-radius: 6px !important;
+      border-radius: 4px !important;
       background: transparent !important;
       color: #6b7280 !important;
-      font-size: 18px !important;
+      font-size: 16px !important;
       cursor: pointer !important;
       font-family: Arial, sans-serif !important;
       margin: 0 !important;
       padding: 0 !important;
+      line-height: 1 !important;
     }
     #ps-sel-panel .ps-close:hover {
-      background: #e5e7eb !important;
+      background: rgba(0, 0, 0, 0.08) !important;
       color: #111827 !important;
     }
     #ps-sel-panel .ps-body {
       box-sizing: border-box !important;
       display: block !important;
-      flex: 1 !important;
-      padding: 16px 20px 20px !important;
+      padding: 10px 14px 12px !important;
       overflow-y: auto !important;
-      font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
-      font-weight: 600 !important;
-      color: #111827 !important;
+      font: 16px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
       margin: 0 !important;
     }
     #ps-sel-panel .ps-body.loading {
-      color: #6b7280 !important;
-      font-weight: normal !important;
+      color: #64748b !important;
+      font-weight: 500 !important;
+      font-size: 13px !important;
       font-style: italic !important;
     }
     #ps-sel-panel .ps-body.error {
       color: #dc2626 !important;
-      font-weight: normal !important;
+      font-weight: 500 !important;
+      font-size: 13px !important;
     }
   `;
   document.head.appendChild(css);
@@ -317,8 +324,8 @@
 
     // Position below selection
     requestAnimationFrame(() => {
-      const pw = p.offsetWidth || 440;
-      const ph = p.offsetHeight || 180;
+      const pw = p.offsetWidth || 260;
+      const ph = p.offsetHeight || 80;
 
       const refX = (lastMouse.x > 0) ? lastMouse.x : (rect.left + rect.width / 2);
       let left = refX - pw / 2;
